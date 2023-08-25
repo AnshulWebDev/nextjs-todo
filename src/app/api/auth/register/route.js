@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../../../utils/features";
 import { User } from "../../../../../models/user";
-
-
+import bcrypt from "bcrypt";
 export const POST = async (req) => {
   try {
     await connectDB();
@@ -23,23 +22,20 @@ export const POST = async (req) => {
       );
     }
 
-    const user = await User.create({
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
       name,
       email,
-      password,
+      password: hashPassword,
     });
-    const options = {
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-    };
 
-    return NextResponse.cookie("token", user._id, options).json(
-      {
-        success: true,
-        message: "registered successfully",
-      },
+    const response = NextResponse.json(
+      { success: true, message: "Account Created" },
       { status: 200 }
     );
+
+    return response;
   } catch (error) {
     console.log(error.message);
     return NextResponse.json({ success: false }, { status: 500 });
