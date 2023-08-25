@@ -13,8 +13,11 @@ const schema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false,  
-    minLength:[6,"Password is too short"],
+    select: false,
+    minLength: [6, "Password is too short"],
+  },
+  token: {
+    type: String,
   },
 });
 
