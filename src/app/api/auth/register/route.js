@@ -38,6 +38,9 @@ export const POST = async (req) => {
     return response;
   } catch (error) {
     console.log(error.message);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: "Internal server error Try Again" },
+      { status: 500 }
+    );
   }
 };
