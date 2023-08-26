@@ -9,7 +9,7 @@ const page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { user, setUser } = useContext(Context);
-  const router = useRouter()
+  const router = useRouter();
   const logInHandler = async (e) => {
     e.preventDefault();
     try {
@@ -23,15 +23,15 @@ const page = () => {
       });
       const data = response.data;
       // console.log(data);
-      if (!data.success) return toast.error(data.message)
-      setUser(data.user)
-
-      toast.success(data.message)
+      if (data.success) {
+        setUser(data.user);
+        return toast.success(data.message);
+      }
     } catch (error) {
-      console.log(error.message);
-      return toast.error("Incorrect email or password")
+      // console.log(error.message);
+      return toast.error(error.response.data.message);
     }
-  }
+  };
   if (user._id) return router.replace("/");
   return (
     <div className="login">
