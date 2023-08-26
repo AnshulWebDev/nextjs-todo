@@ -60,10 +60,13 @@ export const DELETE = async (req) => {
       );
     }
     // console.log(_id);
-    await Task.deleteOne({ _id:_id });
+    await Task.deleteOne(_id);
 
     // console.log(getAllTask);
-    return NextResponse.json({ success: true, message:"Task Delete Successfully" }, { status: 200 });
+    return NextResponse.json(
+      { success: true, message: "Task Delete Successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error.message);
     return NextResponse.json(
