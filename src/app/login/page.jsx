@@ -1,22 +1,64 @@
-"use client"
-import Link from "next/link"
+"use client";
+import axios from "axios";
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
+import { Context } from "../../../components/Clients";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 const page = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { user, setUser } = useContext(Context);
+  const router = useRouter()
+  const logInHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios({
+        method: "post",
+        url: `/api/auth/login`,
+        data: {
+          email,
+          password,
+        },
+      });
+      const data = response.data;
+      // console.log(data);
+      if (!data.success) return toast.error(data.message)
+      setUser(data.user)
+
+      toast.success(data.message)
+    } catch (error) {
+      console.log(error.message);
+      return toast.error("Incorrect email or password")
+    }
+  }
+  if (user._id) return router.replace("/");
   return (
     <div className="login">
-        <section>
-            <form action="">
-                <input type="email" placeholder="Enter Your Email"/>
-                <input type="password" placeholder="Enter Your Password"/>
-                <button type="submit">Login</button>
-                <p>Or</p>
-                <Link href={"/register"}>New User?</Link>
-            </form>
-        </section>
+      <section>
+        <form onSubmit={logInHandler}>
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            type="email"
+            placeholder="Enter Your Email"
+          />
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            type="password"
+            placeholder="Enter Your Password"
+          />
+          <button type="submit">Login</button>
+          <p>Or</p>
+          <Link href={"/register"}>New User?</Link>
+        </form>
+      </section>
     </div>
-  )
-}
+  );
+};
 export const metadata = {
-    title: "Login",
-    description: "This is Login Page for Todo app",
-  };
-export default page
+  title: "Login",
+  description: "This is Login Page for Todo app",
+};
+export default page;
