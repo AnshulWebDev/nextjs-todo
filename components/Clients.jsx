@@ -5,6 +5,7 @@ import { useState, createContext, useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import {useRouter} from "next/navigation"
 export const Context = createContext({ user: {} });
 
 export const Provider = ({ children }) => {
@@ -43,7 +44,7 @@ export const LogoutBtn = () => {
       setUser({});
       toast.success(data.message);
     } catch (error) {
-      return toast.error("Something went wrong");
+      return toast.error(error.response.data.message);
     }
   };
 
@@ -57,8 +58,20 @@ export const LogoutBtn = () => {
 };
 
 export const TodoButton = ({ id, completed }) => {
-  const deleteHandler = (id) => {
-    alert(`deleating ${id}`);
+  const router=useRouter()
+  const deleteHandler = async(id) => {
+    try {
+      const response=await axios({
+        method:"delete",
+        url: `/api/getdeltask`
+      })
+      const data=response;
+  
+      toast.success("Task deleted")
+      router.refresh()
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
   };
   return (
     <>
