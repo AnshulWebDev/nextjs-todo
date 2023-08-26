@@ -26,12 +26,12 @@ const page = () => {
       });
       const data = response.data;
       // console.log(data);
-      if (!data.success) return toast.error(data.message);
-      toast.success(data.message);
+      if (data.success) {
+        toast.success(data.message);
+      }
       return router.replace("/login");
     } catch (error) {
-      console.log(error.message);
-      return toast.error("Fill All Fields")
+      return toast.error(error.response.data.message);
     }
   };
 
