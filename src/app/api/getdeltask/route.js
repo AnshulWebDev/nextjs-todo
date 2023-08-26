@@ -6,15 +6,15 @@ import { Task } from "../../../../models/task";
 export const POST = async (req) => {
   try {
     await connectDB();
-    const cookiesValue = await req.cookies.get("token")?.value;
-    if (!cookiesValue) {
+    const {token}  = await req.json();
+    // console.log("ye cookie ki value hai", token);
+    if (!token) {
       return NextResponse.json(
         { success: false, message: "Please login first" },
         { status: 402 }
       );
     }
-
-    const { _id } = await User.findOne({ token: cookiesValue });
+    const { _id } = await User.findOne({token:token});
     if (!_id) {
       return NextResponse.json(
         { success: false, message: "unauthorize access or login first" },
@@ -43,7 +43,6 @@ export const POST = async (req) => {
 export const DELETE = async (req) => {
   try {
     await connectDB();
-    const { _id } = await req.body;
     const cookiesValue = await req.cookies.get("token")?.value;
     if (!cookiesValue) {
       return NextResponse.json(
@@ -60,7 +59,7 @@ export const DELETE = async (req) => {
       );
     }
     // console.log(_id);
-    await Task.deleteOne(_id);
+    await Task.deleteOne({user:user._id});
     return NextResponse.json(
       { success: true, message: "Task Delete Successfully" },
       { status: 200 }
