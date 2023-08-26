@@ -31,11 +31,14 @@ export const POST = async (req) => {
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
-      user.token=token;
+      user.token = token;
       await user.save();
+      user.password = undefined;
+      user.token = undefined;
       const response = NextResponse.json(
-        { success: true, message: `Welcome Back ${user.name}` },
-        { status: 200 }
+        { success: true, message: `Welcome Back, ${user.name}`,user },
+        { status: 200 },
+        
       );
 
       response.cookies.set({
