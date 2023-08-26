@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 export const POST = async (req) => {
   try {
     await connectDB();
-    const {email,password} = await req.json();
+    const { email, password } = await req.json();
     if (!email || !password) {
       return NextResponse.json(
         { success: false, message: "Enter all fields" },
@@ -18,11 +18,10 @@ export const POST = async (req) => {
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return NextResponse.json(
-        { success: false, message: "Email is Not registered" },
+        { success: false, message: "User Not Found" },
         { status: 401 }
       );
     }
-    console.log(user)
     if (await bcrypt.compare(password, user.password)) {
       const payload = {
         email: user.email,
@@ -32,26 +31,33 @@ export const POST = async (req) => {
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
-      user.token = token;
+      user.token=token;
+      await user.save();
       const response = NextResponse.json(
-        { success: true, message: "Account Loggedin" },
+        { success: true, message: `Welcome Back ${user.name}` },
         { status: 200 }
       );
-  
+
       response.cookies.set({
         name: "token",
         value: token,
         httpOnly: true,
-        maxAge: 3 * 24 * 60 * 60 * 1000,
+        path: "/",
+        maxAge: 120 * 1000,
       });
-  
-      return response;
-    }else{
-        return NextResponse.json({success:false,message:"password incorrect"},{status:400})
-    }
 
+      return response;
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Email or Password incorrect" },
+        { status: 400 }
+      );
+    }
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 }
+    );
   }
 };
