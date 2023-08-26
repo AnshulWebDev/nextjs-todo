@@ -5,7 +5,7 @@ export const POST = async (req) => {
   try {
     await connectDB();
     const cookiesValue = await req.cookies.get("token")?.value;
-    console.log(cookiesValue);
+    // console.log(cookiesValue);
     const user = await User.findOne({ token: cookiesValue });
     if (!user) {
       return NextResponse.json(
