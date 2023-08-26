@@ -1,19 +1,14 @@
-import { TodoItem } from "../../components/serverComponent";
-import Form from "./register/addTodoForm";
-
-export default function Home() {
+import { Suspense } from "react";
+import Form from "./addTodoForm";
+import Todos from "./Todos";
+export default async function Home() {
   return (
     <div className="container">
       <Form />
-      <section className="todosContainer">
-        <TodoItem
-          className="todo"
-          title={"sample Task"}
-          description={"Lorem ipsum dolor sit amet consectetur "}
-          id={"sampledId"}
-          completed={true}
-        />
-      </section>
+      <Suspense fallback={<div>loading...</div>}>
+      <Todos />
+      </Suspense>
+      
     </div>
   );
 }
