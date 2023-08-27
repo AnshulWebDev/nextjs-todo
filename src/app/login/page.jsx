@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../../../components/Clients";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-const page = () => {
+const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { user, setUser } = useContext(Context);
@@ -32,7 +32,10 @@ const page = () => {
       return toast.error(error.response.data.message);
     }
   };
-  if (user._id) return router.replace("/");
+  if (typeof window !== "undefined") {
+    if (user._id) return router.push("/");
+  }
+
   return (
     <div className="login">
       <section>
@@ -61,4 +64,4 @@ export const metadata = {
   title: "Login",
   description: "This is Login Page for Todo app",
 };
-export default page;
+export default Page;
