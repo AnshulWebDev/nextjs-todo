@@ -1,6 +1,6 @@
 import React from "react";
 import Form from "./addTodoForm";
-import Todos from "./todos";
+import Todos from "./Todos";
 
 const Page = () => {
   return (
