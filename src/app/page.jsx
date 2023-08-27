@@ -1,14 +1,14 @@
-import { Suspense } from "react";
+import React from "react";
 import Form from "./addTodoForm";
-import Todos from "./Todos";
-export default async function Home() {
+import Todos from "./todos";
+
+const Page = () => {
   return (
     <div className="container">
       <Form />
-      <Suspense fallback={<div>loading...</div>}>
       <Todos />
-      </Suspense>
-      
     </div>
   );
-}
+};
+
+export default Page;
