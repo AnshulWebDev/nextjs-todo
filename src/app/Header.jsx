@@ -9,7 +9,6 @@ const Header = () => {
       </div>
       <article>
         <Link href={"/"}>Home</Link>
-        <Link href={"/about"}>About</Link>
         <LogoutBtn/>
       </article>
     </div>
