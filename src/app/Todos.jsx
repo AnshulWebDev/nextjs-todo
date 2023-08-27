@@ -1,6 +1,5 @@
 import React from "react";
 import { cookies } from "next/headers";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { TodoItem } from "../../components/serverComponent";
 const fetchTodo = async (token) => {
@@ -22,7 +21,6 @@ const fetchTodo = async (token) => {
 };
 const Todos = async () => {
   const token = cookies().get("token")?.value;
-  if (!token) return useRouter().replace("/login");
   const tasks = await fetchTodo(token);
   return (
     <section className="todosContainer">
