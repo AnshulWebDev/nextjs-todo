@@ -6,7 +6,7 @@ import { Task } from "../../../../models/task";
 export const POST = async (req) => {
   try {
     await connectDB();
-    const {token}  = await req.json();
+    const { token } = await req.json();
     // console.log("ye cookie ki value hai", token);
     if (!token) {
       return NextResponse.json(
@@ -14,7 +14,7 @@ export const POST = async (req) => {
         { status: 402 }
       );
     }
-    const { _id } = await User.findOne({token:token});
+    const { _id } = await User.findOne({ token: token });
     if (!_id) {
       return NextResponse.json(
         { success: false, message: "unauthorize access or login first" },
@@ -59,7 +59,7 @@ export const DELETE = async (req) => {
       );
     }
     // console.log(_id);
-    await Task.deleteOne({user:user._id});
+    await Task.deleteOne({ user: user._id });
     return NextResponse.json(
       { success: true, message: "Task Delete Successfully" },
       { status: 200 }
@@ -68,6 +68,29 @@ export const DELETE = async (req) => {
     console.log(error.message);
     return NextResponse.json(
       { success: false, message: "Internal server error Try Again" },
+      { status: 500 }
+    );
+  }
+};
+
+export const PUT = async (req) => {
+  try {
+    const { _id } =await req.json();
+    // console.log(_id)
+    const task = await Task.findById(_id);
+    task.isCompleted = !task.isCompleted;
+    await task.save();
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Task Updated",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    // console.log(error.message)
+    return NextResponse.json(
+      { message: "Something went wrong Try again" },
       { status: 500 }
     );
   }
