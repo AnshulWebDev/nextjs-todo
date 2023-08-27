@@ -5,11 +5,11 @@ import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Context } from "../../components/Clients";
-const addTodoForm = () => {
+const AddTodoForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const {user}=useContext(Context)
-  const router=useRouter()
+  const { user } = useContext(Context);
+  const router = useRouter();
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -23,21 +23,23 @@ const addTodoForm = () => {
         withCredentials: true,
       });
       const data = response.data;
-      console.log(response);
+      // console.log(response);
       if (data.success == true) {
         toast.success(data.message);
-      } 
-      if(response=="Request failed with status code 402"){
-        toast.error(data.message)
       }
-      router.refresh()
-      setTitle("")
-      setDescription("")
+      if (response == "Request failed with status code 402") {
+        toast.error(data.message);
+      }
+      router.refresh();
+      setTitle("");
+      setDescription("");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.response.data.message);
     }
   };
-  if(!user._id) return router.replace("/login")
+  if(typeof window!=="undefined"){
+    if (!user._id) return router.push("/login");
+  }
   return (
     <div className="login">
       <section>
@@ -61,4 +63,4 @@ const addTodoForm = () => {
   );
 };
 
-export default addTodoForm;
+export default AddTodoForm;
