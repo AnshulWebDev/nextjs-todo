@@ -60,8 +60,5 @@ const Page = () => {
     </div>
   );
 };
-export const metadata = {
-  title: "Login",
-  description: "This is Login Page for Todo app",
-};
+
 export default Page;
