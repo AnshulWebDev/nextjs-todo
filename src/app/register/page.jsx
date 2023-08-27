@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-const page = () => {
+const Page = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +29,9 @@ const page = () => {
       if (data.success) {
         toast.success(data.message);
       }
-      return router.replace("/login");
+      if(typeof window!=="undefined"){
+        return router.push("/login");
+      }
     } catch (error) {
       return toast.error(error.response.data.message);
     }
@@ -69,4 +71,4 @@ export const metadata = {
   title: "Register",
   description: "This is Register Page for Todo app",
 };
-export default page;
+export default Page;
