@@ -5,12 +5,12 @@ import { useState, createContext, useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation";
 export const Context = createContext({ user: {} });
 
 export const Provider = ({ children }) => {
   const [user, setUser] = useState({});
-  const meAPICall=async()=>{
+  const meAPICall = async () => {
     const response = await axios({
       method: "post",
       url: `/api/auth/me`,
@@ -19,7 +19,7 @@ export const Provider = ({ children }) => {
     const data = response.data;
     // console.log(data);
     if (data.success) setUser(data.user);
-  }
+  };
   useEffect(() => {
     meAPICall();
   }, []);
@@ -58,24 +58,42 @@ export const LogoutBtn = () => {
 };
 
 export const TodoButton = ({ id, completed }) => {
-  const router=useRouter()
-  const deleteHandler = async(id) => {
+  const router = useRouter();
+  const deleteHandler = async () => {
+    try {
+      await axios({
+        method: "delete",
+        url: `/api/getdeltask`,
+      });
+      toast.success("Task deleted");
+      router.refresh();
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+  const updateHandler = async (_id) => {
     try {
       const response=await axios({
-        method:"delete",
-        url: `/api/getdeltask`
-      })
-      const data=response;
-  
-      toast.success("Task deleted")
-      router.refresh()
+        method: "put",
+        url: `/api/getdeltask`,
+        data: {
+          _id,
+        },
+      });
+      
+      toast.success(response.data.message);
+      router.refresh();
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     }
   };
   return (
     <>
-      <input type="checkbox" checked={completed} />
+      <input
+        type="checkbox"
+        checked={completed}
+        onChange={() => updateHandler(id)}
+      />
       <button className="btn" onClick={() => deleteHandler(id)}>
         Delete
       </button>
